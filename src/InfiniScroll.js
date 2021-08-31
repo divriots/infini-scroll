@@ -37,7 +37,7 @@ export class InfiniScroll extends HTMLElement {
   }
 
   get rowAmount() {
-    return parseFloat(this.getAttribute("row-amount")) || 2;
+    return parseFloat(this.getAttribute("row-amount")) || 1;
   }
 
   set rowAmount(v) {
