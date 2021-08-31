@@ -1,3 +1,3 @@
-import { InfiniScroll } from './src/InfiniScroll.js';
+import { InfiniScroll } from './InfiniScroll.js';
 
 customElements.define('infini-scroll', InfiniScroll);
