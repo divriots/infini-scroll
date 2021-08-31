@@ -5,7 +5,7 @@ template.innerHTML = /*html*/`
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      height: var(--infini-scroll-container-height, 140px);
+      height: 150px;
       width: 100%;
       overflow-x: scroll;
       scrollbar-width: none;
@@ -20,12 +20,20 @@ template.innerHTML = /*html*/`
 `;
 
 export class InfiniScroll extends HTMLElement {
-  get scrollGap() {
-    return parseFloat(this.getAttribute("scroll-gap")) || 170;
+  get boxWidth() {
+    return parseFloat(this.getAttribute("box-width")) || 150;
   }
 
-  set scrollGap(v) {
-    this.setAttribute("scroll-gap", v);
+  set boxWidth(v) {
+    this.setAttribute("box-width", v);
+  }
+
+  get containerHeight() {
+    return parseFloat(this.getAttribute("container-height")) || 150;
+  }
+
+  set containerHeight(v) {
+    this.setAttribute("container-height", v);
   }
 
   get rowAmount() {
@@ -36,20 +44,28 @@ export class InfiniScroll extends HTMLElement {
     this.setAttribute("row-amount", v);
   }
 
-  get scrollSpeed() {
-    return parseFloat(this.getAttribute("scroll-speed")) || 0.5;
+  get scrollInterval() {
+    return parseFloat(this.getAttribute("scroll-interval")) || 1;
   }
 
-  set scrollSpeed(v) {
-    this.setAttribute("scroll-speed", v);
+  set scrollInterval(v) {
+    this.setAttribute("scroll-interval", v);
   }
 
-  get timeTillResume() {
-    return parseFloat(this.getAttribute("time-till-resume")) || 2000;
+  get scrollAmount() {
+    return parseFloat(this.getAttribute("scroll-amount")) || 1;
   }
 
-  set timeTillResume(v) {
-    this.setAttribute("time-till-resume", v);
+  set scrollAmount(v) {
+    this.setAttribute("scroll-amount", v);
+  }
+
+  get resumeTime() {
+    return parseFloat(this.getAttribute("resume-time")) || 2000;
+  }
+
+  set resumeTime(v) {
+    this.setAttribute("resume-time", v);
   }
 
   get dragSpeed() {
@@ -69,6 +85,17 @@ export class InfiniScroll extends HTMLElement {
       this.setAttribute("reverse", "");
     } else {
       this.removeAttribute("reverse");
+    }
+  }
+
+  static get observedAttributes() {
+    return ['container-height'];
+  }
+
+  attributeChangedCallback(name, oldVal, newVal) {
+    if (name === 'container-height' && oldVal !== newVal) {
+      console.log(newVal);
+      this.style.setProperty('height', `${newVal}px`);
     }
   }
 
@@ -101,7 +128,7 @@ export class InfiniScroll extends HTMLElement {
 
     // Initially reverse direction gets stuck if last elements are not prepended
     // making it impossible to scroll back
-    if (this.reverse && this.scrollLeft < this.scrollGap) {
+    if (this.reverse && this.scrollLeft < this.boxWidth) {
       this.scrollDownHandler();
     }
   }
@@ -115,15 +142,16 @@ export class InfiniScroll extends HTMLElement {
   }
 
   autoScroll() {
+    
     if (this.reverse) {
-      this.scrollLeft -= this.scrollSpeed;
+      this.scrollLeft -= this.scrollAmount;
     } else {
-      this.scrollLeft += this.scrollSpeed;
+      this.scrollLeft += this.scrollAmount;
     }
   }
 
   startInterval() {
-    this.interval = setInterval(this.autoScroll.bind(this));
+    this.interval = setInterval(this.autoScroll.bind(this), this.scrollInterval);
   }
 
   startTimeout() {
@@ -133,7 +161,7 @@ export class InfiniScroll extends HTMLElement {
 
     this.timeout = setTimeout(() => {
       this.startInterval();
-    }, this.timeTillResume);
+    }, this.resumeTime);
   }
 
   wheelHandler(ev) {
@@ -151,7 +179,7 @@ export class InfiniScroll extends HTMLElement {
         this.appendChild(boxes[index]);
       });
     this.scrollByJS = true;
-    this.scrollLeft -= this.scrollGap;
+    this.scrollLeft -= this.boxWidth;
   }
 
   scrollDownHandler() {
@@ -162,7 +190,7 @@ export class InfiniScroll extends HTMLElement {
         this.prepend(boxes[boxes.length - (index + 1)]);
       });
     this.scrollByJS = true;
-    this.scrollLeft += this.scrollGap;
+    this.scrollLeft += this.boxWidth;
   }
 
   scrollHandler(ev) {
@@ -171,9 +199,9 @@ export class InfiniScroll extends HTMLElement {
       return;
     }
     const scrollingUp = this.scrollLeft > this.oldPos;
-    if (scrollingUp && this.scrollLeft > this.scrollGap * 2) {
+    if (scrollingUp && this.scrollLeft > this.boxWidth * 2) {
       this.scrollUpHandler();
-    } else if (this.scrollLeft < this.scrollGap) {
+    } else if (this.scrollLeft < this.boxWidth) {
       this.scrollDownHandler();
     }
     this.oldPos = this.scrollLeft;

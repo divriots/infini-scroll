@@ -1,7 +1,11 @@
 {
-  "name": "@wcd/jorenbroekema.infini-scroll",
-  "version": "0.0.0",
+  "name": "@wcd/divriots.infini-scroll",
+  "version": "0.1.0",
   "scripts": {
     "serve": "npx wcd-cli@latest serve LWuupe7NoXwlpP9BiJoG --open"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./infini-scroll": "./infini-scroll.js"
   }
 }
