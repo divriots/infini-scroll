@@ -6,6 +6,6 @@
   },
   "exports": {
     ".": "./index.js",
-    "./infini-scroll": "./infini-scroll.js"
+    "./define": "./infini-scroll.js"
   }
 }
