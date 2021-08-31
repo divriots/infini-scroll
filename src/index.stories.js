@@ -160,7 +160,7 @@ export const twoRows = () => `
       background-color: grey;
     }
   </style>
-  <infini-scroll box-width="128" container-height="256">
+  <infini-scroll box-width="128" container-height="256" row-amount="2">
     ${Array(20).fill('').map(box => `<div class="box"></div>`).reduce((acc, curr) => `${acc}${curr}`, '')}
   </infini-scroll>
 `;
