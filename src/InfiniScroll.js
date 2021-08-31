@@ -12,8 +12,7 @@ template.innerHTML = /*html*/`
     }
 
     :host::-webkit-scrollbar {
-      width: 0;
-      height: 0;
+      display: none;
     }
   </style>
   <slot></slot>
