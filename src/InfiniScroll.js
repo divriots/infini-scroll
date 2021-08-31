@@ -94,7 +94,6 @@ export class InfiniScroll extends HTMLElement {
 
   attributeChangedCallback(name, oldVal, newVal) {
     if (name === 'container-height' && oldVal !== newVal) {
-      console.log(newVal);
       this.style.setProperty('height', `${newVal}px`);
     }
   }
