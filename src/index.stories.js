@@ -127,6 +127,25 @@ export const reverse = () => `
   </infini-scroll>
 `;
 
+export const followUserDirection = () => `
+  <style>
+    #root {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .box {
+      width: 100px;
+      height: 100px;
+      margin: 14px;
+      background-color: grey;
+    }
+  </style>
+  <infini-scroll follow-user-direction box-width="128" container-height="128">
+    ${Array(20).fill('').map(box => `<div class="box"></div>`).reduce((acc, curr) => `${acc}${curr}`, '')}
+  </infini-scroll>
+`;
+
 export const wideBoxes = () => `
   <style>
     #root {

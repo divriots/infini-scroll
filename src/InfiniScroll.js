@@ -87,6 +87,18 @@ export class InfiniScroll extends HTMLElement {
     }
   }
 
+  get followUserDirection() {
+    return this.hasAttribute("follow-user-direction");
+  }
+
+  set followUserDirection(v) {
+    if (v) {
+      this.setAttribute("follow-user-direction", "");
+    } else {
+      this.removeAttribute("follow-user-direction");
+    }
+  }
+
   static get observedAttributes() {
     return ['container-height'];
   }
@@ -95,13 +107,16 @@ export class InfiniScroll extends HTMLElement {
     if (name === 'container-height' && oldVal !== newVal) {
       this.style.setProperty('height', `${newVal}px`);
     }
+
+    if (name === 'reverse' && oldVal !== newVal) {
+      this.__direction = this.reverse ? 'right' : 'left';
+    }
   }
 
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
 
-    // Defaults, but configurable
     this.initialBoxLength = this.children.length;
     this.oldPos = this.scrollLeft;
     this.scrollByJS = false;
@@ -122,11 +137,12 @@ export class InfiniScroll extends HTMLElement {
     window.addEventListener("mouseup", this.boundMouseUpHandler);
     this.addEventListener("mousedown", this.boundMouseDownHandler);
     window.addEventListener("mousemove", this.boundMouseMoveHandler);
+    this.__direction = this.reverse ? 'right' : 'left';
     this.startInterval();
 
     // Initially reverse direction gets stuck if last elements are not prepended
     // making it impossible to scroll back
-    if (this.reverse && this.scrollLeft < this.boxWidth) {
+    if (this.__direction === 'right' && this.scrollLeft < this.boxWidth) {
       this.scrollDownHandler();
     }
   }
@@ -140,8 +156,7 @@ export class InfiniScroll extends HTMLElement {
   }
 
   autoScroll() {
-    
-    if (this.reverse) {
+    if (this.__direction === 'right') {
       this.scrollLeft -= this.scrollAmount;
     } else {
       this.scrollLeft += this.scrollAmount;
@@ -170,6 +185,9 @@ export class InfiniScroll extends HTMLElement {
   }
 
   scrollUpHandler() {
+    if (this.followUserDirection) {
+      this.__direction = 'left';
+    }
     const boxes = Array.from(this.children);
     Array(this.rowAmount)
       .fill("")
@@ -181,6 +199,9 @@ export class InfiniScroll extends HTMLElement {
   }
 
   scrollDownHandler() {
+    if (this.followUserDirection) {
+      this.__direction = 'right';
+    }
     const boxes = Array.from(this.children);
     Array(this.rowAmount)
       .fill("")

@@ -28,6 +28,7 @@ Webcomponent that infinitely scrolls through a list of nodes in horizontal direc
 - `resume-time`, 2000 by default time until resuming the auto scroll after user interaction has stopped
 - `drag-speed`, default 4, increase to make dragging slide the list faster
 - `reverse`, auto scroll goes in reverse direction
+- `follow-user-direction`, by setting this attribute, the infini-scroll will switch to the user's last manual scroll direction
 
 ## Future
 
