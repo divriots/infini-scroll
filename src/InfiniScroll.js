@@ -213,11 +213,11 @@ export class InfiniScroll extends HTMLElement {
   }
 
   scrollHandler(ev) {
-    const scrollingUp = this.scrollLeft > this.oldPos;
     if (this.scrollByJS) {
       this.scrollByJS = false;
       return;
     }
+    const scrollingUp = this.scrollLeft > this.oldPos;
     if (scrollingUp && this.scrollLeft > this.boxWidth * 2) {
       this.scrollUpHandler();
     } else if (this.scrollLeft < this.boxWidth) {
