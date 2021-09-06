@@ -19,6 +19,19 @@ template.innerHTML = /*html*/`
 `;
 
 export class InfiniScroll extends HTMLElement {
+  static get observedAttributes() {
+    return ['container-height'];
+  }
+
+  get _scrollLeft() {
+    return this.scrollLeft;
+  }
+
+  set _scrollLeft(v) {
+    this.scrollByJS = true;
+    this.scrollLeft = v;
+  }
+
   get boxWidth() {
     return parseFloat(this.getAttribute("box-width")) || 150;
   }
@@ -99,10 +112,6 @@ export class InfiniScroll extends HTMLElement {
     }
   }
 
-  static get observedAttributes() {
-    return ['container-height'];
-  }
-
   attributeChangedCallback(name, oldVal, newVal) {
     if (name === 'container-height' && oldVal !== newVal) {
       this.style.setProperty('height', `${newVal}px`);
@@ -119,6 +128,7 @@ export class InfiniScroll extends HTMLElement {
 
     this.initialBoxLength = this.children.length;
     this.oldPos = this.scrollLeft;
+    this.scrollByBoxMove = false;
     this.scrollByJS = false;
     this.xDiff = 0;
     this.interval;
@@ -143,7 +153,7 @@ export class InfiniScroll extends HTMLElement {
     // Initially reverse direction gets stuck if last elements are not prepended
     // making it impossible to scroll back
     if (this.__direction === 'right' && this.scrollLeft < this.boxWidth) {
-      this.scrollDownHandler();
+      this.boxPrependHandler();
     }
   }
 
@@ -157,9 +167,9 @@ export class InfiniScroll extends HTMLElement {
 
   autoScroll() {
     if (this.__direction === 'right') {
-      this.scrollLeft -= this.scrollAmount;
+      this._scrollLeft -= this.scrollAmount;
     } else {
-      this.scrollLeft += this.scrollAmount;
+      this._scrollLeft += this.scrollAmount;
     }
   }
 
@@ -184,46 +194,45 @@ export class InfiniScroll extends HTMLElement {
     }
   }
 
-  scrollUpHandler() {
-    if (this.followUserDirection) {
-      this.__direction = 'left';
-    }
+  boxAppendHandler() {
     const boxes = Array.from(this.children);
     Array(this.rowAmount)
       .fill("")
       .forEach((v, index) => {
         this.appendChild(boxes[index]);
       });
-    this.scrollByJS = true;
-    this.scrollLeft -= this.boxWidth;
+    this.scrollByBoxMove = true;
+    this._scrollLeft -= this.boxWidth;
   }
 
-  scrollDownHandler() {
-    if (this.followUserDirection) {
-      this.__direction = 'right';
-    }
+  boxPrependHandler() {
     const boxes = Array.from(this.children);
     Array(this.rowAmount)
       .fill("")
       .forEach((v, index) => {
         this.prepend(boxes[boxes.length - (index + 1)]);
       });
-    this.scrollByJS = true;
-    this.scrollLeft += this.boxWidth;
+    this.scrollByBoxMove = true;
+    this._scrollLeft += this.boxWidth;
   }
 
   scrollHandler(ev) {
-    if (this.scrollByJS) {
-      this.scrollByJS = false;
+    if (this.scrollByBoxMove) {
+      this.scrollByBoxMove = false;
       return;
     }
-    const scrollingUp = this.scrollLeft > this.oldPos;
-    if (scrollingUp && this.scrollLeft > this.boxWidth * 2) {
-      this.scrollUpHandler();
-    } else if (this.scrollLeft < this.boxWidth) {
-      this.scrollDownHandler();
+    const scrollingUp = this._scrollLeft > this.oldPos;
+    if (!this.scrollByJS && this.followUserDirection) {
+      this.__direction = scrollingUp ? 'left' : 'right';
+      console.log(this.__direction);
     }
-    this.oldPos = this.scrollLeft;
+    if (scrollingUp && this._scrollLeft > this.boxWidth * 2) {
+      this.boxAppendHandler();
+    } else if (this._scrollLeft < this.boxWidth) {
+      this.boxPrependHandler();
+    }
+    this.oldPos = this._scrollLeft;
+    this.scrollByJS = false;
   }
 
   dragHandler() {
