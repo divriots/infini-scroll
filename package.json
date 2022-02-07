@@ -1,6 +1,6 @@
 {
   "name": "@divriots/infini-scroll",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "scripts": {
     "serve": "npx wcd-cli@latest serve LWuupe7NoXwlpP9BiJoG --open"
   },
