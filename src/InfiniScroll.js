@@ -224,7 +224,6 @@ export class InfiniScroll extends HTMLElement {
     const scrollingUp = this._scrollLeft > this.oldPos;
     if (!this.scrollByJS && this.followUserDirection) {
       this.__direction = scrollingUp ? 'left' : 'right';
-      console.log(this.__direction);
     }
     if (scrollingUp && this._scrollLeft > this.boxWidth * 2) {
       this.boxAppendHandler();
