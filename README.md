@@ -1,5 +1,15 @@
 # Infini Scroll
 
+<p>
+  <a href="https://divRIOTS.com">Brought to you by<br/></a>
+  <a href="https://divRIOTS.com#gh-light-mode-only" target="_blank">
+        <img width="150" height="40" src="https://divRIOTS.com/divriots.svg#gh-light-mode-only" alt="‹div›RIOTS" />
+        </a>
+        <a href="https://divRIOTS.com#gh-dark-mode-only" target="_blank">
+        <img width="150" height="40" src="https://divRIOTS.com/divriots-dark.svg#gh-dark-mode-only" alt="‹div›RIOTS" />
+        </a>
+</p>
+
 Webcomponent that infinitely scrolls through a list of nodes in horizontal direction.
 
 0 dependencies, < 250 lines of JS
