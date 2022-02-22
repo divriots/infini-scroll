@@ -142,7 +142,7 @@ export class InfiniScroll extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.addEventListener("wheel", this.boundWheelHandler);
+    this.addEventListener("wheel", this.boundWheelHandler, { passive: true });
     this.addEventListener("scroll", this.boundScrollHandler);
     window.addEventListener("mouseup", this.boundMouseUpHandler);
     this.addEventListener("mousedown", this.boundMouseDownHandler);
