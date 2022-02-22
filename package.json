@@ -5,7 +5,7 @@
     "serve": "npx wcd-cli@latest serve LWuupe7NoXwlpP9BiJoG --open"
   },
   "exports": {
-    ".": "./index.js",
-    "./define": "./infini-scroll.js"
+    ".": "./dist/index.js",
+    "./define": "./dist/infini-scroll.js"
   }
 }
