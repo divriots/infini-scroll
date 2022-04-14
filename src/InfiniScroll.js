@@ -56,14 +56,6 @@ export class InfiniScroll extends HTMLElement {
     this.setAttribute("row-amount", v);
   }
 
-  get scrollInterval() {
-    return parseFloat(this.getAttribute("scroll-interval")) || 1;
-  }
-
-  set scrollInterval(v) {
-    this.setAttribute("scroll-interval", v);
-  }
-
   get scrollAmount() {
     return parseFloat(this.getAttribute("scroll-amount")) || 1;
   }
@@ -81,7 +73,7 @@ export class InfiniScroll extends HTMLElement {
   }
 
   get dragSpeed() {
-    return parseFloat(this.getAttribute("drag-speed")) || 4;
+    return parseFloat(this.getAttribute("drag-speed")) || 1;
   }
 
   set dragSpeed(v) {
@@ -133,6 +125,7 @@ export class InfiniScroll extends HTMLElement {
     this.xDiff = 0;
     this.interval;
     this.timeout;
+    this.isScrolling = true;
     this.boundWheelHandler = this.wheelHandler.bind(this);
     this.boundScrollHandler = this.scrollHandler.bind(this);
     this.boundMouseUpHandler = this.mouseUpHandler.bind(this);
@@ -148,7 +141,7 @@ export class InfiniScroll extends HTMLElement {
     this.addEventListener("mousedown", this.boundMouseDownHandler);
     window.addEventListener("mousemove", this.boundMouseMoveHandler);
     this.__direction = this.reverse ? 'right' : 'left';
-    this.startInterval();
+    this.autoScroll();
 
     // Initially reverse direction gets stuck if last elements are not prepended
     // making it impossible to scroll back
@@ -166,15 +159,16 @@ export class InfiniScroll extends HTMLElement {
   }
 
   autoScroll() {
+    if (!this.isScrolling) {
+      return;
+    }
+
     if (this.__direction === 'right') {
       this._scrollLeft -= this.scrollAmount;
     } else {
       this._scrollLeft += this.scrollAmount;
     }
-  }
-
-  startInterval() {
-    this.interval = setInterval(this.autoScroll.bind(this), this.scrollInterval);
+    requestAnimationFrame(this.autoScroll.bind(this));
   }
 
   startTimeout() {
@@ -183,13 +177,14 @@ export class InfiniScroll extends HTMLElement {
     }
 
     this.timeout = setTimeout(() => {
-      this.startInterval();
+      this.isScrolling = true;
+      this.autoScroll();
     }, this.resumeTime);
   }
 
   wheelHandler(ev) {
     if (ev.shiftKey) {
-      clearInterval(this.interval);
+      this.isScrolling = false;
       this.startTimeout();
     }
   }
@@ -238,7 +233,7 @@ export class InfiniScroll extends HTMLElement {
     if (!this.dragging) {
       return;
     }
-    clearInterval(this.interval);
+    this.isScrolling = false;
     this.startTimeout();
     this.scrollLeft -= this.xDiff * this.dragSpeed;
     this.xDiff = 0;
