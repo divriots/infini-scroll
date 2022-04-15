@@ -45,7 +45,7 @@ export const slow = () => `
   </style>
   <div class="wrapper">
   <blockquote>On Chrome you can specify scroll-amount to decimal points below 1 to make it smoother, not supported in Firefox</blockquote>
-  <infini-scroll scroll-interval="50" box-width="128" container-height="128">
+  <infini-scroll scroll-amount="0.1" box-width="128" container-height="128">
     ${Array(20).fill('').map(box => `<div class="box"></div>`).reduce((acc, curr) => `${acc}${curr}`, '')}
   </infini-scroll>
   </div>
